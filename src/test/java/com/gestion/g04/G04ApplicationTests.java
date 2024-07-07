@@ -1,5 +1,6 @@
 package com.gestion.g04;
 
+import com.gestion.g04.entities.Category;
 import com.gestion.g04.entities.Product;
 import com.gestion.g04.repositories.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -53,5 +54,32 @@ class G04ApplicationTests {
 		productRepository.deleteAll();
 	}
 
+	@Test
+	public void testFindAllProductByPrix(){
+		List<Product> products =  productRepository.findAllProductByPrix(500.00);
+		products.forEach(System.out::println);
 
+	}
+	@Test
+	public void testFindAllProductByNomPrix(){
+		List<Product> products =  productRepository.findAllProductByNomPrix("TV",500.00);
+		products.forEach(System.out::println);
+
+	}
+
+	@Test
+	public void testFindAllProductByCategory(){
+
+		Category category = new Category();
+		category.setIdCategory(1L);
+		List<Product> products =  productRepository.findAllProductByCategory(category);
+		products.forEach(System.out::println);
+
+	}
+	@Test
+	public void testFindAllProductByNameSort(){
+		List<Product> products =  productRepository.findAllProductByNameSort();
+		products.forEach(System.out::println);
+
+	}
 }

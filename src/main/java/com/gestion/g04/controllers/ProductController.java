@@ -5,13 +5,18 @@ package com.gestion.g04.controllers;
 import com.gestion.g04.entities.Product;
 import com.gestion.g04.services.ProductService;
 import com.gestion.g04.services.ProductServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.naming.Binding;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,9 +29,9 @@ public class ProductController {
     ProductService productService;
 
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public String home(){
-       return "home";
+       return "redirect:/productsList";
     }
 
     @RequestMapping("/createProduct")
@@ -34,38 +39,36 @@ public class ProductController {
         return "CreateProduct";
     }
     @RequestMapping("/saveProduct")
-    public String SaveProduct(@ModelAttribute("product") Product product, @RequestParam("dateJsp") String dateController,
-                              ModelMap modelMap)
-     throws ParseException
-    {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateCreation =  dateFormat.parse(String.valueOf(dateController));
-        product.setDateProduct(dateCreation);
+    public String SaveProduct(@Valid Product product, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) return "CreateProduct";
 
         Product p = productService.saveProduct(product);
-
-        String messageController = "The product ID "+p.getIdProduct()+" price :  "+p.getPrixProduct()+" saved";
-        modelMap.addAttribute("messageJsp",messageController);
-
         return "CreateProduct";
         }
 
 
      @RequestMapping("/productsList")
-    public String ProdcutList(ModelMap modelMap ){
-         List<Product> products = productService.getAllProduct();
+    public String ProductsList(ModelMap modelMap,
+                              @RequestParam (name="page", defaultValue = "0") int page ,
+                              @RequestParam (name="size", defaultValue = "3")  int size ){
+
+         Page<Product> products = productService.getAllProductByPage(page,size);
          modelMap.addAttribute("Products",products);
+         modelMap.addAttribute("pages",new int[products.getTotalPages()]);
+         modelMap.addAttribute("currentPage",page);
         return "ProductsList";
      }
 
      @RequestMapping("/deleteProduct")
-    public String deleteProduct(@RequestParam("id") Long productId,
-                                ModelMap modelMap){
+    public String deleteProduct(@RequestParam("id") Long productId,ModelMap modelMap,
+                                @RequestParam (name="page", defaultValue = "0") int page ,
+                                @RequestParam (name="size", defaultValue = "3")  int size){
             productService.deleteProductById(productId);
-         List<Product> products = productService.getAllProduct();
+         Page<Product> products = productService.getAllProductByPage(page,size);
          modelMap.addAttribute("Products",products);
-        return "ProductsList";
+         modelMap.addAttribute("pages",new int[products.getTotalPages()]);
+         modelMap.addAttribute("currentPage",page);
+         return "ProductsList";
      }
 
      @RequestMapping("/showProduct")
@@ -76,23 +79,31 @@ public class ProductController {
          return "EditProduct";
      }
     @RequestMapping("/updateProduct")
-    public String updateProduct(@ModelAttribute("product") Product product, @RequestParam("dateJsp") String dateController,
-                              ModelMap modelMap)
-            throws ParseException
+    public String updateProduct(@ModelAttribute("product") Product product, ModelMap modelMap,
+                                @RequestParam (name="page", defaultValue = "0") int page ,
+                                @RequestParam (name="size", defaultValue = "3")  int size)
     {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateCreation =  dateFormat.parse(String.valueOf(dateController));
-        product.setDateProduct(dateCreation);
 
         Product p = productService.saveProduct(product);
 
-        String messageController = "The product ID "+p.getIdProduct()+" price :  "+p.getPrixProduct()+" saved";
-        modelMap.addAttribute("messageJsp",messageController);
         List<Product> products = productService.getAllProduct();
         modelMap.addAttribute("Products",products);
+        Page<Product> productsPage = productService.getAllProductByPage(page,size);
+        modelMap.addAttribute("Products",productsPage);
+        modelMap.addAttribute("pages",new int[productsPage.getTotalPages()]);
+        modelMap.addAttribute("currentPage",page);
         return "ProductsList";
     }
 
+    @GetMapping("/accessDenied")
+    public String accessDenied(){
+        return "accessDenied";
+    }
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
 
 }

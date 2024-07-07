@@ -1,10 +1,9 @@
 package com.gestion.g04.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -15,14 +14,25 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProduct;
 
+
+
+    @NotNull
+    @Size(min = 3,max = 20)
     private String designationProduct;
 
+    @Min(10)
+    @Max(10000)
     private Double prixProduct;
 
 
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @PastOrPresent
     private Date dateProduct;
 
 
+    @ManyToOne
+    private Category category;
 
     public Product() {
         super();
