@@ -22,7 +22,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws  Exception{
            httpSecurity.formLogin().loginPage("/login").defaultSuccessUrl("/").permitAll();
-        httpSecurity.authorizeHttpRequests().requestMatchers("/webjars/**").permitAll();
+        httpSecurity.authorizeHttpRequests().requestMatchers("/webjar/**").permitAll();
         httpSecurity.authorizeHttpRequests().requestMatchers("/updateProduct","/deleteProduct","/showProduct").hasAnyRole("ADMIN");
 
         httpSecurity.authorizeHttpRequests().requestMatchers("/createProduct","/saveProduct").hasAnyRole("ADMIN","CASHIER");
