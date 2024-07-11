@@ -28,7 +28,7 @@
                   <th scope="col">Product Name</th>
                   <th scope="col">Product Price</th>
                   <th scope="col">Create Date</th>
-                   <th scope="col" colspan="2"   th:if="${#authorization.expression('hasAnyRole(''ADMIN'')')}">Action</th>
+                   <th scope="col" colspan="2"   th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')')}">Action</th>
                 </tr>
 
                <tr th:each="product : ${Products} ">
@@ -37,13 +37,13 @@
         <td th:text="${product.prixProduct}"></td>
           <td th:text="${product.dateProduct}"></td>
           <td
-             th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+             th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')')}"
           > <a onClick="return confirm('are you sure to delete this item?')"
                    th:href="@{deleteProduct(id=${product.idProduct},
                       page=${currentPage},size=${size}
                    )}" >Delete</a></td>
            <td class="btn btn-link btn-sm btn-rounded"
-               th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+               th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')')}"
            > <a th:href="@{showProduct(id=${product.idProduct})}"> Edit</a> </td>
 
             </tr>

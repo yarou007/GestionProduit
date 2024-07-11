@@ -26,7 +26,7 @@
                  <a class="nav-link dropdown-toggle" href="#" id="navbar Dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Products</a>
                 <ul  class="dropdown-menu" aria-labelledby="navbar Dropdown">
                     <li
-                            th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''CASHIER'')')}"
+                            th:if="${#authorization.expression('hasAnyAuthority(''ROLE_ADMIN'',''ROLE_CASHIER'')')}"
                     > <a class="dropdown-item" th:href="@{createProduct}">New</a></li>
                     <li> <a class="dropdown-item" th:href="@{productsList}">List</a></li>
                 </ul>
